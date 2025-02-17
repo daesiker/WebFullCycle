@@ -21,9 +21,15 @@ let youtuber3 = {
 }
 
 let db = new Map()
-db.set(1, youtuber1)
-db.set(2, youtuber2)
-db.set(3, youtuber3)
+let id = 1
+db.set(id++, youtuber1)
+db.set(id++, youtuber2)
+db.set(id++, youtuber3)
+
+app.get('/youtubers', (req, res) => {
+    res.json(db)
+})
+
 
 app.get('/youtuber/:id', function(req, res) {
     let {id} = req.params
@@ -32,16 +38,27 @@ app.get('/youtuber/:id', function(req, res) {
 
     if (youtuber == undefined) {
         res.json({
-            youtuber
+            message : "없는 상품입니다."
         })
     } else {
+        
         res.json({
-            message : "없는 상품입니다."
+            youtuber
         })
     }
 
 
 })
 
+app.use(express.json())
+app.post('/youtuber', (req, res) => {
+
+    db.set(id++, req.body)
+
+    res.json({
+        message: `${req.body.channelTitle}님, 유튜버 생활을 응원합니다.`
+    })
+
+})
 
 app.listen(1234)
