@@ -27,15 +27,18 @@ db.set(id++, youtuber2)
 db.set(id++, youtuber3)
 
 app.get('/youtubers', (req, res) => {
-    
-
     var youtubers = {}
-
-    db.forEach(function(value, key) {
-        youtubers[key] = value
-    })
-
-    res.json(youtubers)
+    if (db.size !== 0) {
+        db.forEach(function(value, key) {
+            youtubers[key] = value
+        })
+        
+        res.json(youtubers)
+    } else {
+        res.status(404).send({
+            message: "조회할 유튜버가 없습니다."
+        })
+    }
 })
 
 
@@ -45,8 +48,8 @@ app.get('/youtuber/:id', function(req, res) {
     const youtuber = db.get(id)
 
     if (youtuber == undefined) {
-        res.json({
-            message : "유튜버 정보를 찾을 수 없습니다."
+        res.status(404).send({
+            message: "조회할 유튜버가 없습니다."
         })
     } else {
         
@@ -55,20 +58,24 @@ app.get('/youtuber/:id', function(req, res) {
         })
     }
 
-
 })
-
-
 
 
 app.use(express.json())
 app.post('/youtubers', (req, res) => {
+    const channelTitle = req.body.channelTitle
 
-    db.set(id++, req.body)
+    if (channelTitle) {
+        db.set(id++, req.body)
 
-    res.json({
-        message: `${req.body.channelTitle}님, 유튜버 생활을 응원합니다.`
-    })
+        res.status(201).json({
+            message: `${req.body.channelTitle}님, 유튜버 생활을 응원합니다.`
+        })
+    } else {
+        res.status(400).json({
+            message: "요청 값을 제대로 보내주세요."
+        })
+    }
 
 })
 
@@ -77,7 +84,7 @@ app.delete('/youtubers:id', (req, res) => {
     id = parseInt(id)
     const youtuber = db.get(id)
     if (youtuber == undefined) {
-        res.json({
+        res.status(404).json({
             message : `요청하신 ${id}번은 없는 유튜버입니다.`
         })
     } else {
@@ -101,9 +108,6 @@ app.delete('/youtubers', (req, res) => {
             message : `전체 유튜버가 삭제되었습니다.`
         })
     }
-
-
-    
     
 })
 
@@ -126,7 +130,5 @@ app.put('youtubers/:id', (res, req) => {
         })
     }
 })
-
-
 
 app.listen(1234)
