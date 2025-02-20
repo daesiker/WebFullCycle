@@ -10,8 +10,31 @@ var id = 1
 
 //로그인
 app.post('/login', (req, res) => {
+    const {userId, password } = req.body
+    let hasUserId = false
+    var loginUser = {}
+    db.forEach((user,id) => {
+        if (user.userID == userId) {
+            loginUser = user
+        }
+    })
+
+    if (isExist(loginUser)) {
+
+    } else {
+
+    }
+
 
 })
+
+function isExist(obj) {
+    if (Object.keys(obj).length === 0 ) {
+        return true
+    } else {
+        return false
+    }
+}
 
 //회원가입
 app.post('/join', (req, res) => {
