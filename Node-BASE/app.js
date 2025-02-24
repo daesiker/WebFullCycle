@@ -5,7 +5,13 @@ const port = 1234
 
 app.get('/', function(req, res) {
     res.send("Hello world!")
+})
 
+
+app.use(express.json())
+
+app.post('/test', function(req, res) {
+    res.send(req.body.message)
 })
 
 app.listen(port, () => {
@@ -13,4 +19,3 @@ app.listen(port, () => {
 })
 
 
-app.listen(port)
