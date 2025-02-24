@@ -1,26 +1,35 @@
 const express = require('express')
-const app = express()
-const port = 7777
-app.use(express.json())
-app.listen(port)
+const router = express.Router()
 
+router.use(express.json())
 
 let db = new Map()
 var id = 1
 
-app.route('/channels')
+router.route('/')
     .get((req, res) => {
+        var {userId} = req.body
 
-        if (db.size) {
-            let channels = []
-            db.forEach(function(value, key) {
-                channels.push(value)
-            })
-            res.status(200).json(channels)
+        if (db.size && userId) {
+            
+
+                let channels = []
+                db.forEach(function(value, key) {
+                    if (value.userId == userId) {
+                        channels.push(value)
+                    }
+                })
+
+                if (channels.length == 0) {
+                    notFoundChannel(res)
+                } else {
+                    res.status(200).json(channels)
+                }
+                
+
+            
         } else {
-            res.status(404).json( {
-                message : '조회할 채널이 없습니다.'
-            })
+            notFoundChannel(res)
         }
         
 
@@ -28,7 +37,8 @@ app.route('/channels')
     .post((req, res) => {
 
         if (req.body.channelTitle) {
-            db.set(id++, req.body)
+            let channel = req.body
+            db.set(id++, channel)
             res.status(201).json ({
                 message: `${db.get(id-1).channelTitle}채널을 응원합니다.`
             })
@@ -42,7 +52,7 @@ app.route('/channels')
     })
 
 
-app.route('/channels/:id')
+router.route('/:id')
     .get((req, res) => {
         let id = req.params.id
         id = parseInt(id)
@@ -91,3 +101,10 @@ app.route('/channels/:id')
         }
 
     })
+
+function notFoundChannel(res) {
+    res.status(404).json( {
+        message : '조회할 채널이 없습니다.'
+    })
+}
+module.exports = router
