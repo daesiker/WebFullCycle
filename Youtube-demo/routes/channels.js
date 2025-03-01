@@ -1,5 +1,6 @@
 const express = require('express')
 const router = express.Router()
+const conn = require('../mariadb')
 
 router.use(express.json())
 
@@ -9,46 +10,36 @@ var id = 1
 router.route('/')
     .get((req, res) => {
         var {userId} = req.body
+        const sql = `select * from channels where user_id = ?`
 
-        if (db.size && userId) {
-            
-
-                let channels = []
-                db.forEach(function(value, key) {
-                    if (value.userId == userId) {
-                        channels.push(value)
+        if (userId) {
+            conn.query(sql, userId,
+                (err, results) => {
+                    if (results.length) {
+                        res.status(200).json(results)
+                        res.end()
+                    } else {
+                        notFoundChannel(res)
                     }
                 })
-
-                if (channels.length == 0) {
-                    notFoundChannel(res)
-                } else {
-                    res.status(200).json(channels)
-                }
-                
-
-            
         } else {
-            notFoundChannel(res)
+            res.status(400).end()
         }
         
-
     })
     .post((req, res) => {
-
-        if (req.body.channelTitle) {
-            let channel = req.body
-            db.set(id++, channel)
-            res.status(201).json ({
-                message: `${db.get(id-1).channelTitle}채널을 응원합니다.`
+        const {name, userId} = req.body
+        if (name && userId) {
+            let sql = `Insert into channels (name, user_id) values (?, ?)`
+            let values = [name, userId]
+            conn.query(sql, values, (err, results) => {
+                res.status(201).json(results)
             })
         } else {
             res.status(400).json( {
                 message : '요청 값을 제대로 보내주세요.'
             })
         }
-
-        
     })
 
 
@@ -56,14 +47,17 @@ router.route('/:id')
     .get((req, res) => {
         let id = req.params.id
         id = parseInt(id)
-        const channel = db.get(id)
-        if (channel) {
-            res.status(200).json(channel)
-        } else {
-            res.status(404).json( {
-                message : '요청 값을 제대로 보내주세요.'
-            })
-        }
+        const sql = `select * from channels where id = ?`
+        conn.query(sql, id,
+            (err, results) => {
+                if(results.length) {
+                    res.status(200).json(results)
+                } else {
+                    notFoundChannel(res)
+                }
+                
+            }
+        )
     })
     .put((req, res) => {
         let id = req.params
