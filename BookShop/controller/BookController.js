@@ -7,10 +7,25 @@ dotenv.config()
 
 
 const allBooks = (req, res) => {
-    let { category_id } = req.query;
-
+    let { category_id, news, limit, currentPage } = req.query;
+    let sql = "select * from books"
+    
+    let offset = limit * (currentPage - 1);
+    let values = []
     if (category_id) {
-        let sql = "select * from books where category_id = ?"
+        sql = sql + " where category_id = ? AND pub_date between DATE_SUB(NOW(), INTERVAL 1 MONTH) AND NOW()"
+        values.push(category_id)
+    }else if (news && category_id) {
+        sql = sql + " where category_id = ?"
+        values.push(category_id)
+    } else if (news) {
+        sql = sql + " where pub_date between DATE_SUB(NOW(), INTERVAL 1 MONTH) AND NOW()"
+        
+    }
+
+    sql += " LIMIT ? OFFSET ?";
+    values.push(parseInt(limit), parseInt(offset))
+
     conn.query(sql, category_id, (err, results) => {
         if (err) {
             return res.status(StatusCodes.BAD_REQUEST).end();
@@ -22,16 +37,6 @@ const allBooks = (req, res) => {
         }
         
     })
-    } else {
-        let sql = "select * from books"
-        conn.query(sql, (err, results) => {
-        if (err) {
-            return res.status(StatusCodes.BAD_REQUEST).end();
-        }
-
-        return res.status(StatusCodes.OK).json(results);
-    })
-    }
 
     
 };
@@ -39,7 +44,7 @@ const allBooks = (req, res) => {
 const bookDetail = (req, res) => {
     let {id } = req.params;
 
-    let sql = "select * from books where id = ?"
+    let sql = "SELECT * FROM books LEFT JOIN category ON books.category_id = category.id where books.id = ?;"
     conn.query(sql, id, (err, results) => {
         if (err) {
             return res.status(StatusCodes.BAD_REQUEST).end();
