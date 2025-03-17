@@ -8,7 +8,7 @@ dotenv.config()
 
 const allBooks = (req, res) => {
     let { category_id, news, limit, currentPage } = req.query;
-    let sql = "select * from books"
+    let sql = "select *, (select count(*) FROM likes where books.id = liked_book_id) as likes from books"
     
     let offset = limit * (currentPage - 1);
     let values = []
@@ -42,9 +42,11 @@ const allBooks = (req, res) => {
 };
 
 const bookDetail = (req, res) => {
-    let {id } = req.params;
+    let {user_id} = req.body;
+    let book_id = req.params.id;
 
-    let sql = "SELECT * FROM books LEFT JOIN category ON books.category_id = category.id where books.id = ?;"
+    let sql = "SELECT *, (select count(*) from likes where liked_book_id = books.id) as likes, (select exists (select * from likes where user_id = ? and liked_book_id = ?)) as liked FROM books LEFT JOIN category ON books.category_id = category.category_id where books.id = ?;"
+    let values = [user_id, book_id, book_id]
     conn.query(sql, id, (err, results) => {
         if (err) {
             return res.status(StatusCodes.BAD_REQUEST).end();
