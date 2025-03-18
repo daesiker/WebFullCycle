@@ -84,6 +84,11 @@ INSERT INTO orderedBook (order_id, book_id, quantity)
 VALUES (order_id, 3, 2);
 
 
+INSERT INTO cartitems (book_id, quantity, user_id) VALUES (1, 1, 1);
+INSERT INTO cartitems (book_id, quantity, user_id) VALUES (1, 1, 1);
+INSERT INTO cartitems (book_id, quantity, user_id) VALUES (1, 1, 1);
+
+
 SELECT max(id) FROM Bookshop.orderedBook;
 SELECT last_insert_id();
 
