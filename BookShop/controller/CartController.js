@@ -24,7 +24,7 @@ const getCartItems = (req, res) => {
     let sql = `SELECT cartitems.id, book_id, title, summary, quantity, price
                 FROM cartitems LEFT JOIN books
                 ON cartitems.id = books.id
-                WHERE user_id = ? ADN id IN (?)`
+                WHERE user_id = ? AND id IN (?)`
 
     const values = [user_id, selected]
 

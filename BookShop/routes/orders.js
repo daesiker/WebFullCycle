@@ -1,19 +1,13 @@
 const express = require('express');
+const { order, getOrders, getOrderDetail} = require('../controller/OrderController')
 const router = express.Router();
 
 router.use(express.json());
 
-router.post('/', (req, res) => {
+router.post('/', order);
 
-});
+router.get('/', getOrders);
 
-router.get('/', (req, res) => {
-
-});
-
-router.delete('//:id', (req, res) => {
-
-});
-
+router.delete('/:id', getOrderDetail);
 
 module.exports = router
