@@ -104,3 +104,4 @@ VALUES (1, 1, 1);
 
 INSERT INTO orderedBook (order_id, book_id, quantity)
 VALUES (1, 3, 2);
+
