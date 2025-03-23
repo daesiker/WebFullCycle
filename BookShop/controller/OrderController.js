@@ -32,7 +32,7 @@ const order = async (req, res) => {
     let order_id = results.insertId;
 
     //items르ㄹ 가고, 장바구니에서 book_id, quantity 조회
-    sql = 'SELECT bood_id, quantity FROM cartItems WHERE IN (?)'
+    sql = 'SELECT book_id, quantity FROM cartItems WHERE IN (?)'
     let [orderItems, fields] = await conn.query(sql, [items]);
 
 
