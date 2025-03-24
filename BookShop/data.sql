@@ -84,8 +84,24 @@ INSERT INTO orderedBook (order_id, book_id, quantity)
 VALUES (order_id, 3, 2);
 
 
-SELECT max(id) FROM Bookshop.orderedBook;
+INSERT INTO cartitems (book_id, quantity, user_id) VALUES (1, 1, 1);
+INSERT INTO cartitems (book_id, quantity, user_id) VALUES (1, 1, 1);
+INSERT INTO cartitems (book_id, quantity, user_id) VALUES (1, 1, 1);
+
+
+const delivery_id = SELECT max(id) FROM delivery;
+
 SELECT last_insert_id();
 
 // 결제된 도서 장바구니 삭제
 DELETE FROM cartItems WHERE id IN (1,2,3); 
+
+INSERT INTO orders (book_title, total_quantity, total_price, user_id, delivery_id)
+VALUES ("어린왕자들", 3, 60000, 1, (SELECT max(id) from delivery));
+
+INSERT INTO orderedBook (order_id, book_id, quantity)
+VALUES (1, 1, 1);
+
+INSERT INTO orderedBook (order_id, book_id, quantity)
+VALUES (1, 3, 2);
+
