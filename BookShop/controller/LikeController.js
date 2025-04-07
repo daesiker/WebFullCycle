@@ -1,20 +1,7 @@
 const jwt = require('jsonwebtoken')
 const conn = require('../mariadb');
 const {StatusCodes} = require('http-status-codes');
-const dotenv = require('dotenv');
-dotenv.config()
-
-function ensureAuthorization(req, res) {
-
-    try {
-        let receivedJwt = req.headers["authorization"];
-        let decodedJwt = jwt.verify(receivedJwt, process.env.PRIVATE_KEY);
-        return decodedJwt
-    } catch(err) {
-        return err
-    }
-
-}
+const ensureAuthorization = require('../auth');
 
 
 const addLike = (req,res) => {

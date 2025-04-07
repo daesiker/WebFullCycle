@@ -1,4 +1,17 @@
 
+function foo(arg) {
+    return arg
+}
+
+function bar() {
+    console.log('bar');
+}
+
+foo(bar)()
+
+
+
+
 function add1(x,y) {
     return x + y
 }
