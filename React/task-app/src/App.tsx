@@ -1,34 +1,38 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { react, useState } from 'react'
+import { appContainer, buttons, board } from './App.css'
+import BoardList from './components/BoardList/BoardList'
+import ListsContainer from './components/ListsContainer/ListsContainer';
+import { useTypedSelector } from './hooks/redux';
+
 
 function App() {
-  const [count, setCount] = useState(0)
+
+  const [activeBoardId, setActiveBoardId] = useState('board-0');
+
+  const boards = useTypedSelector(state => state.boards.boardArray);
+
+  const getActiveBoard = boards.filter(board => board.boardId === activeBoardId)[0];
+
+  const lists = getActiveBoard.lists
 
   return (
-    <>
+    <div className={appContainer}>
+        <BoardList 
+          activeBoardId = {activeBoardId} 
+          setActiveBoardId = {setActiveBoardId} 
+        />
+      <div className={board}>
+        <ListsContainer lists={lists} boardId={getActiveBoard.boardId}/>
+      </div>
       <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
+        <button className={buttons}>
+          이 게시판 삭제하기
         </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
+        <button>
+
+        </button>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    </div>
   )
 }
 
