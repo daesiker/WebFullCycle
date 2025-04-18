@@ -4,6 +4,7 @@ import SideForm from './SideForm/SideForm';
 import { FiPlusCircle }  from 'react-icons/fi';
 import { addSection, container, title, addButton, boardItemActive, boardItem } from './BoardList.css';
 import clsx from 'clsx';
+import { useAuth } from '../../hooks/useAuth';
 
 type TBoardListProps = {
   activeBoardId: string;
@@ -11,15 +12,31 @@ type TBoardListProps = {
 }
 
 
+
+
 const BoardList: FC<TBoardListProps> = ({
   activeBoardId,
   setActiveBoardId
 }) => {
 
+  const handleSignout = () => {
+    signOut(auth)
+    .then(() => {
+      dispatch(
+        removeUser()
+      )
+    })
+    .catch((error) => {
+      console.log(error)
+    })
+  }
+
   const { boardArray } = useTypedSelector(state => state.boards);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
-  
+  const { isAuth } = useAuth();
+
+
   const handleClick = () => {
     setIsFormOpen(!isFormOpen)
     setTimeout(() => {
